@@ -1,65 +1,119 @@
 import Head from 'next/head'
+import Wave from 'wave-visualizer';
+import React, {useEffect} from "react";
+
+const alternateBars = (functionContext) => {
+    let { data, options, ctx, h, w } = functionContext;
+
+    let point_count = options.point_count || 64;
+    let percent = h / 255;
+    let increase = w / point_count;
+    let breakpoint = Math.floor(point_count / options.colors.length);
+
+    for (let point = 1; point <= point_count; point++) {
+        let p = data[point]; //get value
+        p *= percent;
+
+        let x = increase * point;
+
+        ctx.moveTo(x, h);
+        ctx.lineTo(x, h - p);
+
+        if (point % breakpoint === 0) {
+            let i = (point / breakpoint) - 1;
+            ctx.strokeStyle = options.colors[i];
+            ctx.stroke();
+            ctx.beginPath();
+        }
+
+    }
+};
+
+const createVisualizer = (audioId, canvasId) => {
+  let options = {
+    type: alternateBars,
+    stroke: 3,
+    colors: ["white"],
+    point_count: 32,
+    width: 288,
+    height: 100,
+    frameRate: 1,
+  };
+  let wave = new Wave();
+
+  wave.fromElement(audioId, canvasId, options);
+};
 
 export default function Home() {
+  useEffect( () => {
+    createVisualizer('main-audio', 'audio-visual')
+  }, [])
+
   return (
     <div className="container">
       <Head>
-        <title>Create Next App</title>
+        <title>Fathom Audio Visualizer</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main>
         <h1 className="title">
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Listen to <a href="https://www.fathom.fm">fathom.fm</a>
         </h1>
 
         <p className="description">
-          Get started by editing <code>pages/index.js</code>
+          Audio visualizer examples
         </p>
 
         <div className="grid">
-          <a href="https://nextjs.org/docs" className="card">
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
 
-          <a href="https://nextjs.org/learn" className="card">
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className="card"
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="card"
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+          <div className="card">
+            <div className="visualizer_container">
+              <div className="inner_bottom">
+                <canvas id="audio-visual"></canvas>
+              </div>
+            </div>
+            <audio controls id="main-audio" src="/uds_good-grief.mp4">
+              Your browser does not support the <code>audio</code> element.
+            </audio>
+          </div>
         </div>
       </main>
 
       <footer>
         <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+          href="http://www.fathom.com"
           target="_blank"
           rel="noopener noreferrer"
         >
           Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className="logo" />
+          <img src="/logo.svg" alt="Fathom Logo" className="logo" />
         </a>
       </footer>
 
       <style jsx>{`
+
+        #audio-visual {
+          overflow: hidden;
+          opacity: 1;
+        }
+
+        .inner_bottom {
+          position: absolute;
+          right:0;
+          bottom 0;
+        }
+
+        .visualizer_container {
+          position: relative;
+          min-height:350px;
+          background-repeat: no-repeat;
+          background-color: black;
+          display: flex;
+          background-size: contain;
+          background-image: url('https://fathom-production.s3.amazonaws.com/podcasts/this_week_in_startups/images/hero.jpg')
+        }
+
         .container {
           min-height: 100vh;
           padding: 0 0.5rem;
