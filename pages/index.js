@@ -33,10 +33,10 @@ const createVisualizer = (audioId, canvasId) => {
   let options = {
     type: alternateBars,
     stroke: 3,
-    colors: ["white"],
+    colors: ["red"],
     point_count: 32,
-    width: 288,
-    height: 100,
+    // width: 288,
+    // height: 200,
     frameRate: 1,
   };
   let wave = new Wave();
@@ -106,12 +106,12 @@ export default function Home() {
 
         .visualizer_container {
           position: relative;
-          min-height:350px;
+          min-height:160px;
           background-repeat: no-repeat;
           background-color: black;
           display: flex;
           background-size: contain;
-          background-image: url('https://fathom-production.s3.amazonaws.com/podcasts/this_week_in_startups/images/hero.jpg')
+          background-image: url('https://i.gifer.com/MDP.gif')
         }
 
         .container {
