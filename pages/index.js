@@ -1,53 +1,84 @@
 import Head from 'next/head'
-import Wave from 'wave-visualizer';
-import React, {useEffect} from "react";
+import React from "react";
+import AudioVisualizer from '@/components/audio_visualizer'
 
-const alternateBars = (functionContext) => {
-    let { data, options, ctx, h, w } = functionContext;
+// Alternative way to render the bars in Wave
+const altBars = (functionContext) => {
+  let { data, options, ctx, h, w } = functionContext;
 
-    let point_count = options.point_count || 64;
-    let percent = h / 255;
-    let increase = w / point_count;
-    let breakpoint = Math.floor(point_count / options.colors.length);
+  let point_count = options.point_count || 64;
+  let percent = h / 255;
+  let increase = w / point_count;
+  let breakpoint = Math.floor(point_count / options.colors.length);
 
-    for (let point = 1; point <= point_count; point++) {
-        let p = data[point]; //get value
-        p *= percent;
+  for (let point = 1; point <= point_count; point++) {
+    let p = data[point]; //get value
+    p *= percent;
 
-        let x = increase * point;
+    let x = increase * point;
 
-        ctx.moveTo(x, h);
-        ctx.lineTo(x, h - p);
+    ctx.moveTo(x, h);
+    ctx.lineTo(x, h - p);
 
-        if (point % breakpoint === 0) {
-            let i = (point / breakpoint) - 1;
-            ctx.strokeStyle = options.colors[i];
-            ctx.stroke();
-            ctx.beginPath();
-        }
-
+    if (point % breakpoint === 0) {
+        let i = (point / breakpoint) - 1;
+        ctx.strokeStyle = options.colors[i];
+        ctx.stroke();
+        ctx.beginPath();
     }
-};
-
-const createVisualizer = (audioId, canvasId) => {
-  let options = {
-    type: alternateBars,
-    stroke: 3,
-    colors: ["red"],
-    point_count: 32,
-    // width: 288,
-    // height: 200,
-    frameRate: 1,
-  };
-  let wave = new Wave();
-
-  wave.fromElement(audioId, canvasId, options);
+  }
 };
 
 export default function Home() {
-  useEffect( () => {
-    createVisualizer('main-audio', 'audio-visual')
-  }, [])
+
+  let audioVisualizations = [
+    {
+      id: 1,
+      audio: '/audio/uds_good-grief.mp4',
+      background: 'https://i.gifer.com/MDP.gif',
+      options: {
+        stroke: 3,
+        type: altBars,
+        colors: ['orange'],
+        point_count: 32,
+        width: 200,
+        height: 100,
+      }
+    },
+    {
+      id: 2,
+      audio: '/audio/bt_never-gonna-come-back-down.mp3',
+      background: 'https://media.giphy.com/media/YQitE4YNQNahy/source.gif',
+      options: {
+        stroke: 3,
+        type: altBars,
+        colors: ['red'],
+        point_count: 32,
+      }
+    },
+    {
+      id: 4,
+      audio: '/audio/prodigy_diesel-power.mp3',
+      background: 'https://media.giphy.com/media/RyXVu4ZW454IM/source.gif',
+      options: {
+        stroke: 3,
+        type: altBars,
+        colors: ['white'],
+        point_count: 32,
+      }
+    },
+    {
+      id: 3,
+      audio: '/audio/orbital_halycon+on+on.mp3',
+      background: 'https://media.giphy.com/media/FnGJfc18tDDHy/source.gif',
+      options: {
+        stroke: 3,
+        type: altBars,
+        colors: ['white'],
+        point_count: 32,
+      }
+    },
+  ]
 
   return (
     <div className="container">
@@ -66,17 +97,13 @@ export default function Home() {
         </p>
 
         <div className="grid">
-
-          <div className="card">
-            <div className="visualizer_container">
-              <div className="inner_bottom">
-                <canvas id="audio-visual"></canvas>
+          {audioVisualizations.map(
+            avData => (
+              <div className="card">
+                <AudioVisualizer {...avData} />
               </div>
-            </div>
-            <audio controls id="main-audio" src="/uds_good-grief.mp4">
-              Your browser does not support the <code>audio</code> element.
-            </audio>
-          </div>
+            )
+          )}
         </div>
       </main>
 
@@ -92,37 +119,6 @@ export default function Home() {
       </footer>
 
       <style jsx>{`
-
-        #audio-visual {
-          overflow: hidden;
-          opacity: 1;
-        }
-
-        .inner_bottom {
-          position: absolute;
-          right:0;
-          bottom 0;
-        }
-
-        .visualizer_container {
-          position: relative;
-          min-height:160px;
-          background-repeat: no-repeat;
-          background-color: black;
-          display: flex;
-          background-size: contain;
-          background-image: url('https://i.gifer.com/MDP.gif')
-        }
-
-        .container {
-          min-height: 100vh;
-          padding: 0 0.5rem;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        }
-
         main {
           padding: 5rem 0;
           flex: 1;
