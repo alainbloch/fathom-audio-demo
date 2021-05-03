@@ -1,9 +1,74 @@
 import Head from 'next/head'
 import React from "react";
-import AudioVisualizer from '@/components/audio_visualizer'
+import AudioVisualizer from '@/components/audio_visualizer';
+import TestVisualizer from '@/components/test_visualizer';
+
+// extraction but changing the beginPath
+const drawCircle = ([x, y], diameter, ctx, options = {}) => {
+    let { color, lineColor = ctx.strokeStyle } = options
+    let radius = (diameter / 2);
+
+    ctx.lineWidth = 1;
+
+    ctx.arc(x, y, radius, 0, 2 * Math.PI);
+
+    ctx.strokeStyle = lineColor
+
+    ctx.stroke();
+
+    ctx.fillStyle = color
+
+    if (color) ctx.fill()
+
+    ctx.beginPath();
+};
 
 // Alternative way to render the bars in Wave
 const altBars = (functionContext) => {
+  let { data, options, ctx, h, w } = functionContext;
+
+    let point_count = options.point_count || 64;
+    let percent = h / 255;
+    let buffer = (options.stroke * 2)
+    let increase = ((w / point_count) - buffer);
+
+    let breakpoint = Math.floor(point_count / options.colors.length);
+
+    for (let point = 1; point <= point_count; point++) {
+      let p = data[point]; //get value
+      p *= percent;
+
+      let x = (increase * (point)) + options.stroke;
+
+      console.log("x", x);
+
+      let startY = h;
+
+      let endY = (h - p);
+
+      let i = (point / breakpoint) - 1;
+
+      let color = options.colors[i] || options.colors[0];
+
+      ctx.strokeStyle = color;
+      ctx.lineWidth = options.stroke;
+
+      // line stroke
+      ctx.beginPath();
+      ctx.moveTo(x, startY);
+      ctx.lineTo(x, endY);
+      ctx.stroke();
+      
+      // circle stroke
+      let diameter = (options.stroke - 1);
+      if (endY > 2) {
+        drawCircle([x, endY], diameter, ctx, { color: color });
+      }
+    }
+};
+
+// Extraction
+const realBars = (functionContext) => {
   let { data, options, ctx, h, w } = functionContext;
 
   let point_count = options.point_count || 64;
@@ -29,55 +94,82 @@ const altBars = (functionContext) => {
   }
 };
 
-export default function Home() {
+const Home = () => {
 
-  let audioVisualizations = [
+  let testVisualizations = [
     {
       id: 1,
-      audio: '/audio/uds_good-grief.mp4',
-      background: 'https://i.gifer.com/MDP.gif',
       options: {
-        stroke: 3,
+        stroke: 4,
         type: altBars,
-        colors: ['orange'],
-        point_count: 32,
-        width: 200,
-        height: 100,
+        colors: ['white'],
+        point_count: 7,
+        width: 320,
+        // height: 100,
       }
     },
+
     {
       id: 2,
-      audio: '/audio/bt_never-gonna-come-back-down.mp3',
-      background: 'https://media.giphy.com/media/YQitE4YNQNahy/source.gif',
       options: {
         stroke: 3,
-        type: altBars,
-        colors: ['red'],
+        background: 'https://media.giphy.com/media/FnGJfc18tDDHy/source.gif',
+        type: realBars,
+        colors: ['blue'],
         point_count: 32,
+        width: 288,
+        // height: 100,
       }
     },
-    {
-      id: 4,
-      audio: '/audio/prodigy_diesel-power.mp3',
-      background: 'https://media.giphy.com/media/RyXVu4ZW454IM/source.gif',
-      options: {
-        stroke: 3,
-        type: altBars,
-        colors: ['white'],
-        point_count: 32,
-      }
-    },
-    {
-      id: 3,
-      audio: '/audio/orbital_halycon+on+on.mp3',
-      background: 'https://media.giphy.com/media/FnGJfc18tDDHy/source.gif',
-      options: {
-        stroke: 3,
-        type: altBars,
-        colors: ['white'],
-        point_count: 32,
-      }
-    },
+  ];
+
+  let audioVisualizations = [
+    // {
+    //   id: 1,
+    //   audio: '/audio/uds_good-grief.mp4',
+    //   options: {
+    //     stroke: 4,
+    //     type: altBars,
+    //     colors: ['white'],
+    //     point_count: 32,
+    //     width: 300,
+    //     // height: 100,
+    //   }
+    // },
+    // {
+    //   id: 2,
+    //   audio: '/audio/bt_never-gonna-come-back-down.mp3',
+    //   options: {
+    //     background: 'https://media.giphy.com/media/YQitE4YNQNahy/source.gif',
+    //     stroke: 3,
+    //     type: altBars,
+    //     colors: ['red'],
+    //     point_count: 32,
+    //     width: 288,
+    //   }
+    // },
+    // {
+    //   id: 4,
+    //   audio: '/audio/prodigy_diesel-power.mp3',
+    //   options: {
+    //     background: 'https://media.giphy.com/media/RyXVu4ZW454IM/source.gif',
+    //     stroke: 3,
+    //     type: altBars,
+    //     colors: ['white'],
+    //     point_count: 32,
+    //   }
+    // },
+    // {
+    //   id: 3,
+    //   audio: '/audio/orbital_halycon+on+on.mp3',
+    //   options: {
+    //     background: 'https://media.giphy.com/media/FnGJfc18tDDHy/source.gif',
+    //     stroke: 3,
+    //     type: altBars,
+    //     colors: ['white'],
+    //     point_count: 32,
+    //   }
+    // },
   ]
 
   return (
@@ -97,13 +189,26 @@ export default function Home() {
         </p>
 
         <div className="grid">
-          {audioVisualizations.map(
-            avData => (
-              <div className="card">
-                <AudioVisualizer {...avData} />
-              </div>
+
+          {
+            testVisualizations.map(
+              testData => (
+                <div className="card">
+                  <TestVisualizer {...testData} />
+                </div>
+              )
             )
-          )}
+          }
+
+          {
+            audioVisualizations.map(
+              avData => (
+                <div className="card">
+                  <AudioVisualizer {...avData} />
+                </div>
+              )
+            )
+          }
         </div>
       </main>
 
@@ -253,7 +358,42 @@ export default function Home() {
         * {
           box-sizing: border-box;
         }
+
+        #audio-visual {
+          overflow: hidden;
+          opacity: 1;
+        }
+
+        .inner_bottom {
+          // position: absolute;
+          // right:0;
+          // bottom 0;
+        }
+
+        .visualizer_container {
+          // position: relative;
+          min-height:160px;
+          background-repeat: no-repeat;
+          background-color: black;
+          display: flex;
+          background-size: contain;
+        }
+
+        .container {
+          min-height: 100vh;
+          padding: 0 0.5rem;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .av-canvas {
+          image-rendering: pixelated;
+        }
       `}</style>
     </div>
   )
 }
+
+export default Home;

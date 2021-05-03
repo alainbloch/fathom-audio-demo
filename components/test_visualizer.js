@@ -1,5 +1,31 @@
-import Wave from 'wave-visualizer';
 import React, {useEffect} from "react";
+import WaveHelper from '@/components/wave_helper';
+
+const visualize = (canvas, ctx, options) => {
+  let data = [];
+
+  function getRandomArbitrary(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  for (let point = 1; point <= 64; point++) {
+    data.push(getRandomArbitrary(1,100));  
+  };
+
+  let h = options.height || canvas.height;
+  
+  let w = options.width || canvas.width;
+  
+  ctx.strokeStyle = options.colors[0];
+  
+  ctx.lineWidth = options.stroke;
+
+  let functionContext = {
+    data, options, ctx, h, w
+  };
+
+  options.type(functionContext);
+}
 
 // AudioVisualizer component
 // @props id (String) distinct id for component
@@ -12,52 +38,43 @@ import React, {useEffect} from "react";
 //   width (Integer) width of the rendered visualizer
 //   height (Integer) height of the rendered visualizer
 //   frameRate (Integer) Determines how many frames in between rendered (1 is default)
-const AudioVisualizer = props => {
+const TestVisualizer = props => {
   const {
     id,
-    audio,
-    background,
     options
   } = props;
 
-  let containerId = `av-container-${id}`
-  let audioId = `av-audio-${id}`;
-  let canvasId = `av-canvas-${id}`;
+  let containerId = `tv-container-${id}`
+  let canvasId = `tv-canvas-${id}`;
   let inlineStyle = {
     width: options.width,
   }
   
   useEffect( () => {
+
     let canvas = document.getElementById(canvasId);
 
     let ctx = canvas.getContext("2d");
 
-    let wave = new Wave();
-
-
-    let h = options.height || canvas.height;
-    
-    let w = options.width || canvas.width;
-
-
     if (options.background) {
-
       let background = new Image();
+
+      let h = options.height || canvas.height;
+      
+      let w = options.width || canvas.width;
+
 
       background.src = options.background;
 
-      // let background = GIF();
-
-      // background.load(options.background);
-
       background.onload = () => {
         ctx.drawImage(background, 0,0, w, h);
-        options.background = background;
-        wave.fromElement(audioId, canvasId, options);
+        visualize(canvas, ctx, options);
       }
+
     } else {
-      wave.fromElement(audioId, canvasId, options);
+      visualize(canvas, ctx, options);
     }
+
   }, [])
 
   return (
@@ -67,11 +84,8 @@ const AudioVisualizer = props => {
           <canvas id={canvasId} className="av-canvas" style={inlineStyle}></canvas>
         </div>
       </div>
-      <audio controls id={audioId} src={audio}>
-        Your browser does not support the <code>audio</code> element.
-      </audio>
     </div>
   )
 }
 
-export default AudioVisualizer;
+export default TestVisualizer;
