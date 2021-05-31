@@ -103,7 +103,7 @@ const Home = () => {
         stroke: 4,
         type: altBars,
         colors: ['white'],
-        point_count: 7,
+        point_count: 20,
         width: 320,
         // height: 100,
       }
@@ -124,52 +124,52 @@ const Home = () => {
   ];
 
   let audioVisualizations = [
-    // {
-    //   id: 1,
-    //   audio: '/audio/uds_good-grief.mp4',
-    //   options: {
-    //     stroke: 4,
-    //     type: altBars,
-    //     colors: ['white'],
-    //     point_count: 32,
-    //     width: 300,
-    //     // height: 100,
-    //   }
-    // },
-    // {
-    //   id: 2,
-    //   audio: '/audio/bt_never-gonna-come-back-down.mp3',
-    //   options: {
-    //     background: 'https://media.giphy.com/media/YQitE4YNQNahy/source.gif',
-    //     stroke: 3,
-    //     type: altBars,
-    //     colors: ['red'],
-    //     point_count: 32,
-    //     width: 288,
-    //   }
-    // },
-    // {
-    //   id: 4,
-    //   audio: '/audio/prodigy_diesel-power.mp3',
-    //   options: {
-    //     background: 'https://media.giphy.com/media/RyXVu4ZW454IM/source.gif',
-    //     stroke: 3,
-    //     type: altBars,
-    //     colors: ['white'],
-    //     point_count: 32,
-    //   }
-    // },
-    // {
-    //   id: 3,
-    //   audio: '/audio/orbital_halycon+on+on.mp3',
-    //   options: {
-    //     background: 'https://media.giphy.com/media/FnGJfc18tDDHy/source.gif',
-    //     stroke: 3,
-    //     type: altBars,
-    //     colors: ['white'],
-    //     point_count: 32,
-    //   }
-    // },
+    {
+      id: 1,
+      audio: '/audio/uds_good-grief.mp4',
+      options: {
+        stroke: 4,
+        type: altBars,
+        colors: ['white'],
+        point_count: 32,
+        width: 300,
+        // height: 100,
+      }
+    },
+    {
+      id: 2,
+      audio: '/audio/bt_never-gonna-come-back-down.mp3',
+      options: {
+        background: 'https://media.giphy.com/media/YQitE4YNQNahy/source.gif',
+        stroke: 3,
+        type: altBars,
+        colors: ['red'],
+        point_count: 32,
+        width: 288,
+      }
+    },
+    {
+      id: 4,
+      audio: '/audio/prodigy_diesel-power.mp3',
+      options: {
+        background: 'https://media.giphy.com/media/RyXVu4ZW454IM/source.gif',
+        stroke: 3,
+        type: altBars,
+        colors: ['white'],
+        point_count: 32,
+      }
+    },
+    {
+      id: 3,
+      audio: '/audio/orbital_halycon+on+on.mp3',
+      options: {
+        background: 'https://media.giphy.com/media/FnGJfc18tDDHy/source.gif',
+        stroke: 3,
+        type: altBars,
+        colors: ['white'],
+        point_count: 32,
+      }
+    },
   ]
 
   return (

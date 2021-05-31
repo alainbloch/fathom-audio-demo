@@ -1,5 +1,7 @@
 import Wave from 'wave-visualizer';
 import React, {useEffect} from "react";
+import GIF from '@/components/gif';
+
 
 // AudioVisualizer component
 // @props id (String) distinct id for component
